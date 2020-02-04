@@ -130,6 +130,7 @@ if(dim(new_pq)[1] > 0){
       "<li><strong>shc_audits</strong> - Scottish Healthcare Audits</li>",
       "<li><strong>hps</strong> - Health Protection Scotland</li>",
       "<li><strong>mesh</strong> - Mesh Consultancy</li>",
+      "<li><strong>aov</strong> - Atlas of Variation</li>",
     "</ul>",
     "Notes: if you want to assign one question to multiple areas, then create a duplicate row for the question and fill in different areas ",
     "These will then be emailed to both areas.",
