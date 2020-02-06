@@ -37,6 +37,21 @@ pq <- read_csv(glue("allocated/{pq_dated}_new_pqs_allocated.csv"),
                col_types = "cTTTcccclccc")
 
 #***************************************
+#optional! clean up of encoding####
+#***************************************
+
+#sometimes there are encoding problems between server/laptops
+#server encodes as UTF-8, windows uses Latin1
+#e.g. sometimes a problem with £ symbol
+
+#to check encoding for each question:
+pq %>% mutate(encd = Encoding(item_text)) %>% select(event_id,encd, item_text)
+
+#if any are UTF8, check question for problems
+#you can delete weird characters in the csv file directly
+#unicode characters present in R (e.g. <U+00A3>) are encoded ok in emails
+
+#***************************************
 #get email addresses####
 #***************************************
 emails <- read_csv("email_addresses.csv")
@@ -121,27 +136,11 @@ pq <- pq %>%
 #***************************************
 
 #keeps list of all allocated questions
+#get rid of duplicated rows
 all_pq <- read_csv("allocated/all_allocated_pqs.csv")
 all_pq <- bind_rows(all_pq, pq)
+all_pq <- distinct(all_pq, event_id, .keep_all = TRUE)
 write_csv(all_pq, "allocated/all_allocated_pqs.csv")
-
-#***************************************
-#optional! clean up of encoding####
-#***************************************
-
-#sometimes there are encoding problems between server/laptops
-#server encodes as UTF-8, windows uses Latin1
-#e.g. sometimes a problem with £ symbol
-
-#to check encoding for each question:
-pq %>% mutate(encd = Encoding(item_text)) %>% select(event_id,encd, item_text)
-
-#you can run iconv() to convert, but sometimes will make an NA
-#this will be reported by tidylog
-#pq <- pq %>% mutate(item_text = iconv(item_text, to = "Latin1", from = "UTF-8"))
-
-#you can also delete weird characters in the csv file directly
-#unicode characters present in R (e.g. <U+00A3>) are encoded ok in emails
 
 #***************************************
 #generate message####
